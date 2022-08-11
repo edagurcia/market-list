@@ -1,0 +1,22 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+	width: 0.5rem;
+	background-color: white;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #3d4a73;
+}
+
+body {
+	font-family: "Raleway", sans-serif;
+}
