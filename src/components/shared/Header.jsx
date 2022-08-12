@@ -20,6 +20,7 @@ const Header = () => {
 
 const HeadContainer = styled.div`
 	width: 100%;
+	padding: 1rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;

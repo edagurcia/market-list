@@ -13,6 +13,3 @@ Aplicación React para las compras del mercado de las familias.
 - Registrar Nuevos Usuarios
 - Autenticar
 - Olvido Contraseña
-- Buscar Usuario y Solicitar Unirse
-- Crear Listas de Compras
-- Mostrar Productos Solicitados

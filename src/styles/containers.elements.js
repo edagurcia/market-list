@@ -22,7 +22,7 @@ const LinkContainer = styled.div`
 
 const GridContainer = styled.div`
 	overflow-y: scroll;
-	height: 12rem;
+	height: 200px;
 	padding: 1rem;
 `;
 

@@ -9,8 +9,10 @@ import {
 	Timestamp,
 	updateDoc,
 	doc,
+	deleteDoc,
 } from "firebase/firestore";
 import { auth, app } from "../firebase/utils";
+import useAuth from "../hooks/useAuth";
 
 const CompraContext = createContext();
 
@@ -21,42 +23,57 @@ const CompraProvider = ({ children }) => {
 	const db = getFirestore(app);
 
 	const listRef = collection(db, "listas");
+	const { usuario } = useAuth();
 
-	const obtenerMisLista = () => {
-		const q = query(
-			listRef,
-			where("usuario", "==", auth.currentUser.uid.toString())
-		);
-		const querySnapshot = onSnapshot(q);
-		const docs = [];
-		querySnapshot.forEach((doc) => {
-			docs.push({
-				...doc.data(),
-				id: doc.id,
+	useEffect(() => {
+		const obtenerMisLista = () => {
+			const q = query(listRef, where("usuario", "==", usuario.uid));
+			onSnapshot(q, (querySnapshot) => {
+				const docs = [];
+				querySnapshot.forEach((doc) => {
+					docs.push({
+						id: doc.id,
+						...doc.data(),
+					});
+				});
+				setList(docs);
+				setCargando(false);
 			});
-		});
-		setList(docs);
-		setCargando(false);
-	};
+		};
+		if (usuario !== null) {
+			obtenerMisLista();
+		}
+	}, [usuario]);
 
-	const agregarCompra = async (producto) => {
+	const agregarCompra = async (formData) => {
 		const docData = {
-			producto: producto,
+			producto: formData.producto,
 			creado: Timestamp.fromDate(new Date()),
 			completo: false,
-			usuario: auth.currentUser.uid,
+			usuario: formData.usuario,
 		};
 
 		await addDoc(collection(db, "listas"), docData);
 		setGuardado(true);
 	};
 
-	const cambiarEstado = async (id) => {
-		await updateDoc(
-			doc(db, "listas", id, {
-				completo: !completo,
-			})
-		);
+	const completado = async (id) => {
+		const docRef = doc(db, "listas", id);
+		await updateDoc(docRef, {
+			completo: true,
+		});
+	};
+
+	const noCompletado = async (id) => {
+		const docRef = doc(db, "listas", id);
+		await updateDoc(docRef, {
+			completo: false,
+		});
+	};
+
+	const borrarProducto = async (id) => {
+		const docRef = doc(db, "listas", id);
+		await deleteDoc(docRef);
 	};
 
 	return (
@@ -66,9 +83,10 @@ const CompraProvider = ({ children }) => {
 				cargando,
 				guardado,
 				setGuardado,
-				obtenerMisLista,
 				agregarCompra,
-				cambiarEstado,
+				completado,
+				noCompletado,
+				borrarProducto,
 			}}
 		>
 			{children}

@@ -4,10 +4,12 @@ import { toast } from "react-toastify";
 import { FaPlus } from "react-icons/fa";
 import { Group } from "../../styles/form.elements";
 import useCompras from "../../hooks/useCompras";
+import useAuth from "../../hooks/useAuth";
 
 const FormItem = () => {
 	const [producto, setProducto] = useState("");
 	const { agregarCompra, guardado, setGuardado } = useCompras();
+	const { usuario } = useAuth();
 
 	useEffect(() => {
 		if (guardado) {
@@ -25,7 +27,12 @@ const FormItem = () => {
 			return;
 		}
 
-		agregarCompra(producto);
+		const formData = {
+			producto,
+			usuario: usuario.uid,
+		};
+
+		agregarCompra(formData);
 	};
 
 	return (
@@ -55,7 +62,7 @@ const Form = styled.form`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	margin-bottom: 20px;
+	margin-bottom: 5px;
 	gap: 10px;
 `;
 
